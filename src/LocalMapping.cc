@@ -24,6 +24,7 @@
 #include "Optimizer.h"
 
 #include<mutex>
+#include "usleep.h"
 
 namespace ORB_SLAM2
 {

@@ -28,6 +28,7 @@
 #include<opencv2/core/core.hpp>
 
 #include<System.h>
+#include "usleep.h"
 
 using namespace std;
 

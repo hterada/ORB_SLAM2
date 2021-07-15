@@ -29,6 +29,8 @@
 
 #include"System.h"
 
+#include "usleep.h"
+
 using namespace std;
 
 void LoadImages(const string &strSequence, vector<string> &vstrImageFilenames,

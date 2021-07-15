@@ -28,6 +28,8 @@
 
 #include<System.h>
 
+#include "usleep.h"
+
 using namespace std;
 
 void LoadImages(const string &strImagePath, const string &strPathTimes,

@@ -25,6 +25,7 @@
 #include <thread>
 #include <pangolin/pangolin.h>
 #include <iomanip>
+#include "usleep.h"
 
 namespace ORB_SLAM2
 {
