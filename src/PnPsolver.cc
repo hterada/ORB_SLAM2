@@ -55,7 +55,7 @@
 #include <vector>
 #include <cmath>
 #include <opencv2/core/core.hpp>
-#include "Thirdparty/DBoW2/DUtils/Random.h"
+#include "Random.h"
 #include <algorithm>
 
 using namespace std;
@@ -64,7 +64,7 @@ namespace ORB_SLAM2
 {
 
 
-PnPsolver::PnPsolver(const Frame &F, const vector<MapPoint*> &vpMapPointMatches):
+PnPsolver::PnPsolver(const Frame &F, const std::vector<MapPoint*> &vpMapPointMatches):
     pws(0), us(0), alphas(0), pcs(0), maximum_number_of_correspondences(0), number_of_correspondences(0), mnInliersi(0),
     mnIterations(0), mnBestInliers(0), N(0)
 {
@@ -156,13 +156,13 @@ void PnPsolver::SetRansacParameters(double probability, int minInliers, int maxI
         mvMaxError[i] = mvSigma2[i]*th2;
 }
 
-cv::Mat PnPsolver::find(vector<bool> &vbInliers, int &nInliers)
+cv::Mat PnPsolver::find(std::vector<bool> &vbInliers, int &nInliers)
 {
     bool bFlag;
     return iterate(mRansacMaxIts,bFlag,vbInliers,nInliers);    
 }
 
-cv::Mat PnPsolver::iterate(int nIterations, bool &bNoMore, vector<bool> &vbInliers, int &nInliers)
+cv::Mat PnPsolver::iterate(int nIterations, bool &bNoMore, std::vector<bool> &vbInliers, int &nInliers)
 {
     bNoMore = false;
     vbInliers.clear();
@@ -176,7 +176,7 @@ cv::Mat PnPsolver::iterate(int nIterations, bool &bNoMore, vector<bool> &vbInlie
         return cv::Mat();
     }
 
-    vector<size_t> vAvailableIndices;
+    std::vector<size_t> vAvailableIndices;
 
     int nCurrentIterations = 0;
     while(mnIterations<mRansacMaxIts || nCurrentIterations<nIterations)
@@ -226,7 +226,7 @@ cv::Mat PnPsolver::iterate(int nIterations, bool &bNoMore, vector<bool> &vbInlie
             if(Refine())
             {
                 nInliers = mnRefinedInliers;
-                vbInliers = vector<bool>(mvpMapPointMatches.size(),false);
+                vbInliers = std::vector<bool>(mvpMapPointMatches.size(),false);
                 for(int i=0; i<N; i++)
                 {
                     if(mvbRefinedInliers[i])
@@ -244,7 +244,7 @@ cv::Mat PnPsolver::iterate(int nIterations, bool &bNoMore, vector<bool> &vbInlie
         if(mnBestInliers>=mRansacMinInliers)
         {
             nInliers=mnBestInliers;
-            vbInliers = vector<bool>(mvpMapPointMatches.size(),false);
+            vbInliers = std::vector<bool>(mvpMapPointMatches.size(),false);
             for(int i=0; i<N; i++)
             {
                 if(mvbBestInliers[i])
@@ -259,7 +259,7 @@ cv::Mat PnPsolver::iterate(int nIterations, bool &bNoMore, vector<bool> &vbInlie
 
 bool PnPsolver::Refine()
 {
-    vector<int> vIndices;
+    std::vector<int> vIndices;
     vIndices.reserve(mvbBestInliers.size());
 
     for(size_t i=0; i<mvbBestInliers.size(); i++)
@@ -628,9 +628,9 @@ void PnPsolver::estimate_R_and_t(double R[3][3], double t[3])
 
 void PnPsolver::print_pose(const double R[3][3], const double t[3])
 {
-  cout << R[0][0] << " " << R[0][1] << " " << R[0][2] << " " << t[0] << endl;
-  cout << R[1][0] << " " << R[1][1] << " " << R[1][2] << " " << t[1] << endl;
-  cout << R[2][0] << " " << R[2][1] << " " << R[2][2] << " " << t[2] << endl;
+  std::cout << R[0][0] << " " << R[0][1] << " " << R[0][2] << " " << t[0] << std::endl;
+  std::cout << R[1][0] << " " << R[1][1] << " " << R[1][2] << " " << t[1] << std::endl;
+  std::cout << R[2][0] << " " << R[2][1] << " " << R[2][2] << " " << t[2] << std::endl;
 }
 
 void PnPsolver::solve_for_sign(void)
@@ -886,7 +886,7 @@ void PnPsolver::qr_solve(CvMat * A, CvMat * b, CvMat * X)
 
     if (eta == 0) {
       A1[k] = A2[k] = 0.0;
-      cerr << "God damnit, A is singular, this shouldn't happen." << endl;
+      std::cerr << "God damnit, A is singular, this shouldn't happen." << std::endl;
       return;
     } else {
       double * ppAik = ppAkk, sum = 0.0, inv_eta = 1. / eta;

@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 
     if(argc != 3)
     {
-        cerr << endl << "Usage: rosrun ORB_SLAM2 Mono path_to_vocabulary path_to_settings" << endl;        
+        std::cerr << std::endl << "Usage: rosrun ORB_SLAM2 Mono path_to_vocabulary path_to_settings" << std::endl;        
         ros::shutdown();
         return 1;
     }    

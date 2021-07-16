@@ -61,8 +61,8 @@ void ViewerAR::Run()
 
     cv::Mat im, Tcw;
     int status;
-    vector<cv::KeyPoint> vKeys;
-    vector<MapPoint*> vMPs;
+    std::vector<cv::KeyPoint> vKeys;
+    std::vector<MapPoint*> vMPs;
 
     while(1)
     {
@@ -106,7 +106,7 @@ void ViewerAR::Run()
 
     pangolin::OpenGlMatrixSpec P = pangolin::ProjectionMatrixRDF_TopLeft(w,h,fx,fy,cx,cy,0.001,1000);
 
-    vector<Plane*> vpPlane;
+    std::vector<Plane*> vpPlane;
 
     while(1)
     {
@@ -164,7 +164,7 @@ void ViewerAR::Run()
                         delete vpPlane[i];
                     }
                     vpPlane.clear();
-                    cout << "All cubes erased!" << endl;
+                    std::cout << "All cubes erased!" << std::endl;
                 }
                 menu_clear = false;
             }
@@ -173,12 +173,12 @@ void ViewerAR::Run()
                 Plane* pPlane = DetectPlane(Tcw,vMPs,50);
                 if(pPlane)
                 {
-                    cout << "New virtual cube inserted!" << endl;
+                    std::cout << "New virtual cube inserted!" << std::endl;
                     vpPlane.push_back(pPlane);
                 }
                 else
                 {
-                    cout << "No plane detected. Point the camera to a planar region." << endl;
+                    std::cout << "No plane detected. Point the camera to a planar region." << std::endl;
                 }
                 menu_detectplane = false;
             }
@@ -192,7 +192,7 @@ void ViewerAR::Run()
                 {
                     if(mpSystem->MapChanged())
                     {
-                        cout << "Map changed. All virtual elements are recomputed!" << endl;
+                        std::cout << "Map changed. All virtual elements are recomputed!" << std::endl;
                         bRecompute = true;
                     }
                 }
@@ -236,9 +236,9 @@ void ViewerAR::Run()
 
 }
 
-void ViewerAR::SetImagePose(const cv::Mat &im, const cv::Mat &Tcw, const int &status, const vector<cv::KeyPoint> &vKeys, const vector<ORB_SLAM2::MapPoint*> &vMPs)
+void ViewerAR::SetImagePose(const cv::Mat &im, const cv::Mat &Tcw, const int &status, const std::vector<cv::KeyPoint> &vKeys, const std::vector<ORB_SLAM2::MapPoint*> &vMPs)
 {
-    unique_lock<mutex> lock(mMutexPoseImage);
+    std::unique_lock<std::mutex> lock(mMutexPoseImage);
     mImage = im.clone();
     mTcw = Tcw.clone();
     mStatus = status;
@@ -248,7 +248,7 @@ void ViewerAR::SetImagePose(const cv::Mat &im, const cv::Mat &Tcw, const int &st
 
 void ViewerAR::GetImagePose(cv::Mat &im, cv::Mat &Tcw, int &status, std::vector<cv::KeyPoint> &vKeys,  std::vector<MapPoint*> &vMPs)
 {
-    unique_lock<mutex> lock(mMutexPoseImage);
+    std::unique_lock<std::mutex> lock(mMutexPoseImage);
     im = mImage.clone();
     Tcw = mTcw.clone();
     status = mStatus;
@@ -308,7 +308,7 @@ void ViewerAR::PrintStatus(const int &status, const bool &bLocMode, cv::Mat &im)
     }
 }
 
-void ViewerAR::AddTextToImage(const string &s, cv::Mat &im, const int r, const int g, const int b)
+void ViewerAR::AddTextToImage(const std::string &s, cv::Mat &im, const int r, const int g, const int b)
 {
     int l = 10;
     //imText.rowRange(im.rows-imText.rows,imText.rows) = cv::Mat::zeros(textSize.height+10,im.cols,im.type());
@@ -393,9 +393,9 @@ void ViewerAR::DrawTrackedPoints(const std::vector<cv::KeyPoint> &vKeys, const s
 Plane* ViewerAR::DetectPlane(const cv::Mat Tcw, const std::vector<MapPoint*> &vMPs, const int iterations)
 {
     // Retrieve 3D points
-    vector<cv::Mat> vPoints;
+    std::vector<cv::Mat> vPoints;
     vPoints.reserve(vMPs.size());
-    vector<MapPoint*> vPointMP;
+    std::vector<MapPoint*> vPointMP;
     vPointMP.reserve(vMPs.size());
 
     for(size_t i=0; i<vMPs.size(); i++)
@@ -418,9 +418,9 @@ Plane* ViewerAR::DetectPlane(const cv::Mat Tcw, const std::vector<MapPoint*> &vM
 
 
     // Indices for minimum set selection
-    vector<size_t> vAllIndices;
+    std::vector<size_t> vAllIndices;
     vAllIndices.reserve(N);
-    vector<size_t> vAvailableIndices;
+    std::vector<size_t> vAvailableIndices;
 
     for(int i=0; i<N; i++)
     {
@@ -428,7 +428,7 @@ Plane* ViewerAR::DetectPlane(const cv::Mat Tcw, const std::vector<MapPoint*> &vM
     }
 
     float bestDist = 1e10;
-    vector<float> bestvDist;
+    std::vector<float> bestvDist;
 
     //RANSAC
     for(int n=0; n<iterations; n++)
@@ -459,7 +459,7 @@ Plane* ViewerAR::DetectPlane(const cv::Mat Tcw, const std::vector<MapPoint*> &vM
         const float c = vt.at<float>(3,2);
         const float d = vt.at<float>(3,3);
 
-        vector<float> vDistances(N,0);
+        std::vector<float> vDistances(N,0);
 
         const float f = 1.0f/sqrt(a*a+b*b+c*c+d*d);
 
@@ -468,7 +468,7 @@ Plane* ViewerAR::DetectPlane(const cv::Mat Tcw, const std::vector<MapPoint*> &vM
             vDistances[i] = fabs(vPoints[i].at<float>(0)*a+vPoints[i].at<float>(1)*b+vPoints[i].at<float>(2)*c+d)*f;
         }
 
-        vector<float> vSorted = vDistances;
+        std::vector<float> vSorted = vDistances;
         sort(vSorted.begin(),vSorted.end());
 
         int nth = max((int)(0.2*N),20);
@@ -483,7 +483,7 @@ Plane* ViewerAR::DetectPlane(const cv::Mat Tcw, const std::vector<MapPoint*> &vM
 
     // Compute threshold inlier/outlier
     const float th = 1.4*bestDist;
-    vector<bool> vbInliers(N,false);
+    std::vector<bool> vbInliers(N,false);
     int nInliers = 0;
     for(int i=0; i<N; i++)
     {
@@ -494,7 +494,7 @@ Plane* ViewerAR::DetectPlane(const cv::Mat Tcw, const std::vector<MapPoint*> &vM
         }
     }
 
-    vector<MapPoint*> vInlierMPs(nInliers,NULL);
+    std::vector<MapPoint*> vInlierMPs(nInliers,NULL);
     int nin = 0;
     for(int i=0; i<N; i++)
     {
@@ -615,7 +615,7 @@ Plane::Plane(const float &nx, const float &ny, const float &nz, const float &ox,
     const float a = atan2(s,c);
     Tpw = cv::Mat::eye(4,4,CV_32F);
     const float rang = -3.14f/2+((float)rand()/RAND_MAX)*3.14f;
-    cout << rang;
+    std::cout << rang;
     Tpw.rowRange(0,3).colRange(0,3) = ExpSO3(v*a/s)*ExpSO3(up*rang);
     o.copyTo(Tpw.col(3).rowRange(0,3));
 

@@ -68,11 +68,11 @@ public:
     void RunGlobalBundleAdjustment(unsigned long nLoopKF);
 
     bool isRunningGBA(){
-        unique_lock<std::mutex> lock(mMutexGBA);
+        std::unique_lock<std::mutex> lock(mMutexGBA);
         return mbRunningGBA;
     }
     bool isFinishedGBA(){
-        unique_lock<std::mutex> lock(mMutexGBA);
+        std::unique_lock<std::mutex> lock(mMutexGBA);
         return mbFinishedGBA;
     }   
 

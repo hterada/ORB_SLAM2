@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 
     if(argc != 4)
     {
-        cerr << endl << "Usage: rosrun ORB_SLAM2 Stereo path_to_vocabulary path_to_settings do_rectify" << endl;
+        std::cerr << std::endl << "Usage: rosrun ORB_SLAM2 Stereo path_to_vocabulary path_to_settings do_rectify" << std::endl;
         ros::shutdown();
         return 1;
     }    
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 
     ImageGrabber igb(&SLAM);
 
-    stringstream ss(argv[3]);
+    std::stringstream ss(argv[3]);
 	ss >> boolalpha >> igb.do_rectify;
 
     if(igb.do_rectify)
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
         cv::FileStorage fsSettings(argv[2], cv::FileStorage::READ);
         if(!fsSettings.isOpened())
         {
-            cerr << "ERROR: Wrong path to settings" << endl;
+            std::cerr << "ERROR: Wrong path to settings" << std::endl;
             return -1;
         }
 
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
         if(K_l.empty() || K_r.empty() || P_l.empty() || P_r.empty() || R_l.empty() || R_r.empty() || D_l.empty() || D_r.empty() ||
                 rows_l==0 || rows_r==0 || cols_l==0 || cols_r==0)
         {
-            cerr << "ERROR: Calibration parameters to rectify stereo are missing!" << endl;
+            std::cerr << "ERROR: Calibration parameters to rectify stereo are missing!" << std::endl;
             return -1;
         }
 
