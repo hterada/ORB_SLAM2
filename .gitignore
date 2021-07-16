@@ -24,3 +24,10 @@ lib/
 
 *.o
 *.d
+*.cmake
+*.bin
+*.make
+*.ts
+Thirdparty/CMakeFiles/
+Thirdparty/CMakeCache.txt
+Thirdparty/Makefile
